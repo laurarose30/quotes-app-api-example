@@ -3,64 +3,83 @@ import { ApiClient} from './ApiClient';
 
 function App() {
 
-  const responseStatusCheck = (responseObject) => {
-    if(responseObject.status >= 200 && responseObject.status < 300){
-      return Promise.resolve(responseObject);
-
-    }else{
-      return Promise.reject(new Error(responseObject.statusText));
-    }
-  }
-
-  const [quotes, changeQuotes] = useState({
-    content: "",
-    author: "",
-    tags: [],
-  });
+  
+//defaults in state
+  const [quotes, changeQuotes] = useState({});
   const api = new ApiClient();
 
-  const [fetching,changeFetching] = useState(false);
+ 
 
+
+
+
+//getting data from api 
   const refreshQuote = () => {
-    changeQuotes({
-      content: "Loading...",
-      author: "Loading...",
-      tags: [],
-
-    })
-    changeFetching(true);
-
+   
     api
     .getQuote()
     
       .then( (res) => {
         changeQuotes(res.data);
+        
       })
       .catch((error) => {
         console.log(error);
       })
-      .finally( (state) => changeFetching(false) );
-     
+      
   }
 
   useEffect(() => {
       refreshQuote();
+      
   }, []);
 
+
+  function buildWeather() {
+      //is it an array with more than  one thing in
+      if(quotes.weather != undefined){
+        //give me back all items in the array
+        return quotes.weather.map ( (item) => {
+          //for each item in the array give me back some JSX
+          return (
+            <div>
+              {item.main}<br />
+              {item.description}<br />
+            </div>
+
+          )
+
+        }    )
+
+      }
+
+  }
+
+
+
+
+
+
+//display funcition 
   return (
     <>
-      <h1>Quote of the Day</h1>
-      <p>
-        <b>Content:</b> {quotes.content}{" "}
-      </p>
-      <p>
-        <b>Author:</b> {quotes.author}{" "}
-      </p>
-      <p>
-        <b>Tags:</b> {quotes.tags.join(", ")}
-      </p>
-
-      <button disabled={fetching} onClick={() => refreshQuote()}>Get new Quote</button>
+      <h1>weather</h1>
+      {quotes.name}
+      <br></br>
+      {quotes.dt}
+      <br></br>
+      {quotes.coord != undefined? quotes.coord.lat : "" }
+      <br></br>
+      {quotes.coord != undefined? quotes.coord.lon : ""}
+      <br></br>
+      {quotes.main != undefined? quotes.main.temp : ""}
+      <br></br>
+      {quotes.main != undefined? quotes.main.feels_like: ""}
+      <br></br>
+      
+     {buildWeather()}
+      
+      <br></br>
     </>
   );
 }

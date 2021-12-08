@@ -22,13 +22,14 @@ export class ApiClient {
         })
      }
 
-     getAuthors(skip,limit){
-        return this.getItems(`https://api.quotable.io/authors?skip=${skip}&limit=${limit}`)
-
+     getWeather() {
+      return this.getRequest(
+        `https://api.openweathermap.org/data/2.5/weather?q=Sheffield,uk&units=metric&appid=a259dfea1e4b9fde6238fb3438509e75`
+      );
     }
 
     getQuote(){
-        return this.getItems("https://api.quotable.io/random");
+        return this.getItems(`https://api.openweathermap.org/data/2.5/weather?q=Sheffield,uk&units=metric&appid=a259dfea1e4b9fde6238fb3438509e75`);
     }
 
 
